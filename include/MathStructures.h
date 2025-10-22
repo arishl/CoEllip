@@ -6,7 +6,7 @@
 #define COELLIP_MATHSTRUCTURES_H
 
 
-template<long long P>
+template <long long P>
 struct Fp
 {
     long long value;
@@ -17,17 +17,17 @@ struct Fp
     {
     }
 
-    constexpr Fp operator+(const Fp &o) const
+    constexpr Fp operator+(const Fp& o) const
     {
         return Fp(value + o.value);
     }
 
-    constexpr Fp operator-(const Fp &o) const
+    constexpr Fp operator-(const Fp& o) const
     {
         return Fp(value - o.value);
     }
 
-    constexpr Fp operator*(const Fp &o) const
+    constexpr Fp operator*(const Fp& o) const
     {
         return Fp(value * o.value);
     }
@@ -54,24 +54,27 @@ struct Fp
         return pow(P - 2);
     }
 
-    constexpr Fp operator/(const Fp &o) const
+    constexpr Fp operator/(const Fp& o) const
     {
         return *this * o.inv();
     }
 
-    constexpr bool operator==(const Fp &o) const
+    constexpr bool operator==(const Fp& o) const
     {
         return value == o.value;
     }
 
-    constexpr bool operator!=(const Fp &o) const
+    constexpr bool operator!=(const Fp& o) const
     {
         return !(*this == o);
     }
-
+    friend std::ostream& operator<<(std::ostream& os, const Fp<P>& a)
+    {
+        return os << a.value;
+    }
 };
 
-template<typename F>
+template <typename F>
 struct EllipticCurve
 {
     F a, b;
@@ -85,13 +88,16 @@ struct EllipticCurve
         return (F(4) * a.pow(3) + F(27) * b.pow(2)).value == 0;
     }
 
-    constexpr F j_invariant() const {
+    constexpr F j_invariant() const
+    {
         F a3, b2;
         if constexpr (std::is_class_v<F>)
         {
             a3 = a.pow(3);
             b2 = b.pow(2);
-        } else {
+        }
+        else
+        {
             a3 = static_cast<F>(std::pow(a, 3));
             b2 = static_cast<F>(std::pow(b, 2));
         }
@@ -99,28 +105,19 @@ struct EllipticCurve
         F denom = (static_cast<F>(4) * a3) + (static_cast<F>(27) * b2);
         return num / denom;
     }
+    friend std::ostream& operator<<(std::ostream& os, const EllipticCurve<F>& e)
+    {
+        return os << "y^2 = x^3 + " << e.a << "x + " << e.b;
+    }
 };
 
-template<long long P>
-std::ostream &operator<<(std::ostream &os, const Fp<P> &point)
-{
-    os << point.value;
-    return os;
-}
 
-template<typename Field>
-std::ostream &operator<<(std::ostream &os, const EllipticCurve<Field> &curve)
-{
-    os << "y^2 = x^3 + " << curve.a << "x + " << curve.b;
-    return os;
-}
-
-template<typename F>
+template <typename F>
 struct GraphNode
 {
     EllipticCurve<F> curve;
     F j;
-    std::vector<std::shared_ptr<GraphNode> > neighbors;
+    std::vector<std::shared_ptr<GraphNode>> neighbors;
 
     explicit GraphNode(EllipticCurve<F> c) : curve(c), j(c.j_invariant())
     {
@@ -128,19 +125,27 @@ struct GraphNode
 };
 
 template <typename Field>
-std::ostream& operator<<(std::ostream& os, const GraphNode<Field>& node) {
+std::ostream& operator<<(std::ostream& os, const GraphNode<Field>& node)
+{
     os << "GraphNode(" << node.curve << ")";
 
-    if (!node.neighbors.empty()) {
+    if (!node.neighbors.empty())
+    {
         os << "\n  Neighbors:";
-        for (const auto& neighbor_ptr : node.neighbors) {
-            if (neighbor_ptr) {
+        for (const auto& neighbor_ptr : node.neighbors)
+        {
+            if (neighbor_ptr)
+            {
                 os << "\n    -> " << neighbor_ptr->curve;
-            } else {
+            }
+            else
+            {
                 os << "\n    -> (null)";
             }
         }
-    } else {
+    }
+    else
+    {
         os << "\n  (no neighbors)";
     }
 
