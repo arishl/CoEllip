@@ -11,7 +11,7 @@ int main() {
         return 1;
     }
 
-    std::cout << "E: y^2 = x^3 + " << E.a.value << "x + " << E.b.value << " over F_" << p << "\n";
+    std::cout << "E: " << E << " over F_" << p << "\n";
     std::cout << "j-invariant: " << E.j_invariant().value << "\n";
 
     return 0;
