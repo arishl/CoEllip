@@ -119,4 +119,24 @@ struct GraphNode
     }
 };
 
+template <typename Field>
+std::ostream& operator<<(std::ostream& os, const GraphNode<Field>& node) {
+    os << "GraphNode(" << node.curve << ")";
+
+    if (!node.neighbors.empty()) {
+        os << "\n  Neighbors:";
+        for (const auto& neighbor_ptr : node.neighbors) {
+            if (neighbor_ptr) {
+                os << "\n    -> " << neighbor_ptr->curve;
+            } else {
+                os << "\n    -> (null)";
+            }
+        }
+    } else {
+        os << "\n  (no neighbors)";
+    }
+
+    return os;
+}
+
 #endif //COELLIP_MATHSTRUCTURES_H
