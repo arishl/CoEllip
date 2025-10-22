@@ -3,16 +3,14 @@
 
 int main() {
     constexpr long long p = 10177;
-    using F = Fp<p>;
-    EllipticCurve<F> E(F(2), F(3));
+    using F = int;
+    auto A = std::make_shared<GraphNode<F>>(EllipticCurve<F>{F{5}, F{3}});
+    auto B = std::make_shared<GraphNode<F>>(EllipticCurve<F>{F{5}, F{7}});
+    auto C = std::make_shared<GraphNode<F>>(EllipticCurve<F>{F{9}, F{2}});
 
-    if (E.is_singular()) {
-        std::cerr << "Curve is singular!\n";
-        return 1;
-    }
+    A->neighbors.push_back(B);
+    A->neighbors.push_back(C);
+    B->neighbors.push_back(A);
 
-    std::cout << "E: " << E << " over F_" << p << "\n";
-    std::cout << "j-invariant: " << E.j_invariant().value << "\n";
-
-    return 0;
+    std::cout << *A << "\n";
 }

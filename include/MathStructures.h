@@ -85,10 +85,18 @@ struct EllipticCurve
         return (F(4) * a.pow(3) + F(27) * b.pow(2)).value == 0;
     }
 
-    constexpr F j_invariant() const
-    {
-        F num = F(1728) * (F(4) * a.pow(3));
-        F denom = (F(4) * a.pow(3)) + (F(27) * b.pow(2));
+    constexpr F j_invariant() const {
+        F a3, b2;
+        if constexpr (std::is_class_v<F>)
+        {
+            a3 = a.pow(3);
+            b2 = b.pow(2);
+        } else {
+            a3 = static_cast<F>(std::pow(a, 3));
+            b2 = static_cast<F>(std::pow(b, 2));
+        }
+        F num = static_cast<F>(1728) * (static_cast<F>(4) * a3);
+        F denom = (static_cast<F>(4) * a3) + (static_cast<F>(27) * b2);
         return num / denom;
     }
 };
